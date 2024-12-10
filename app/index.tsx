@@ -5,7 +5,7 @@ export default function Index() {
     <View
       className="bg-gray-100 flex-1 items-center justify-center"
     >
-      <Text className="text-3xl font-semibold text-gray-800">Aura</Text>
+      <Text className="text-3xl font-semibold text-secondary-100">Aura</Text>
       <StatusBar style="auto"></StatusBar>
     </View>
   );

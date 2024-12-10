@@ -1,15 +1,12 @@
 import { Text, View } from "react-native";
-
+import { StatusBar } from "expo-status-bar";
 export default function Index() {
   return (
     <View
-      style={{
-        flex: 1,
-        justifyContent: "center",
-        alignItems: "center",
-      }}
+      className="bg-gray-100 flex-1 items-center justify-center"
     >
-      <Text>Edit app/index.tsx to edit this screen.</Text>
+      <Text className="text-3xl font-semibold text-gray-800">Aura</Text>
+      <StatusBar style="auto"></StatusBar>
     </View>
   );
 }

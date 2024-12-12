@@ -3,7 +3,7 @@ import React, { useEffect } from 'react'
 import { Slot,SplashScreen,Stack } from 'expo-router'
 import '../assets/css/global.css'
 import { useFonts } from 'expo-font'
-
+import GlobalProvider from '@/context/GlobalProvider'
 // prevent auto hiding splash screen before assets loading is completed
 SplashScreen.preventAutoHideAsync();
 
@@ -29,33 +29,28 @@ const RootLayout = () => {
   if(!fontsLoaded && !error) return null;
 
   return (
-      <Stack>
-        <Stack.Screen 
-          name='index'
-          options={{ 
-            headerShown: false
-           }}
-        />
-        <Stack.Screen 
-          name='(auth)'
-          options={{ 
-            headerShown: false
-           }}
-        />
-         <Stack.Screen 
-          name='(tab)'
-          options={{ 
-            headerShown: false
-           }}
-        />
-         {/* <Stack.Screen 
-          name='(search/)'
-          options={{ 
-            headerShown: false
-           }}
-        /> */}
-        
-      </Stack>      
+      <GlobalProvider>
+        <Stack>
+          <Stack.Screen 
+            name='index'
+            options={{ 
+              headerShown: false
+            }}
+          />
+          <Stack.Screen 
+            name='(auth)'
+            options={{ 
+              headerShown: false
+            }}
+          />
+          <Stack.Screen 
+            name='(tabs)'
+            options={{ 
+              headerShown: false
+            }}
+          />        
+        </Stack>      
+      </GlobalProvider>
   )
 }
 

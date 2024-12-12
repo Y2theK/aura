@@ -1,12 +1,11 @@
-import { View, Text, ScrollView, Image } from 'react-native'
+import { View, Text, ScrollView, Image, Alert } from 'react-native'
 import React, { useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { images } from '../../constants'
 import FormField from '@/components/FormField'
 import CustomButton from '@/components/CustomButton'
-import { Link } from 'expo-router'
-
-
+import { Link, router } from 'expo-router'
+import  { createUser } from '../../libs/appwrite'
 
 const SignUp = () => {
 
@@ -16,8 +15,25 @@ const SignUp = () => {
     password: ''
   });
 
-  const submit = () => {
+  const submit = async () => {
+    if(!form.name || !form.email || !form.password){
+      Alert.alert('Error','Please fill in all fields');
+    }
 
+    setIsSubmitting(true);
+
+    try {
+      const result = await createUser(form.email, form.password, form.name);
+
+      //set it to global state for session
+
+      router.push('/home');
+
+    } catch (error) {
+      Alert.alert('Error',error.message)
+    }finally{
+      setIsSubmitting(false);
+    }
   }
 
   const [isSubmitting,setIsSubmitting] = useState(false);
@@ -29,8 +45,8 @@ const SignUp = () => {
           <Image source={images.logo} resizeMode='contain' className='w-[115px] h-[35px]' />
           <Text className='text-2xl text-white text-semibold mt-10 font-psemibold'>Sign up to Aura</Text>
           <FormField 
-            title="Email"
-            placeholder="Enter your email"
+            title="Name"
+            placeholder="Enter your name"
             value={form.name}
             handleChangeText={(e) => setForm({...form,name : e })}
             otherStyles="mt-10"

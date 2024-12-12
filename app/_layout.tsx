@@ -29,7 +29,33 @@ const RootLayout = () => {
   if(!fontsLoaded && !error) return null;
 
   return (
-      <Slot />      
+      <Stack>
+        <Stack.Screen 
+          name='index'
+          options={{ 
+            headerShown: false
+           }}
+        />
+        <Stack.Screen 
+          name='(auth)'
+          options={{ 
+            headerShown: false
+           }}
+        />
+         <Stack.Screen 
+          name='(tab)'
+          options={{ 
+            headerShown: false
+           }}
+        />
+         {/* <Stack.Screen 
+          name='(search/)'
+          options={{ 
+            headerShown: false
+           }}
+        /> */}
+        
+      </Stack>      
   )
 }
 

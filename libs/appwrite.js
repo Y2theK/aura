@@ -5,7 +5,7 @@ export const config = {
     projectId: "675a8887000cf38f037a",
     databaseId: "675a89db0024c13bbf1e",
     userCollectionId: "675a89f5000d6fa0593e",
-    videaCollectionId: "675a8a0d001b3a936a88",
+    videoCollectionId: "675a8a0d001b3a936a88",
     storageId: "675a8bb8002c83a44c88"
 }
 // Init your React Native SDK
@@ -20,6 +20,7 @@ client
 const account = new Account(client);
 const avatar = new Avatars(client);
 const databases = new Databases(client);
+
 export const createUser = async (email, password, name) => {
     try {
         //create new account
@@ -89,3 +90,32 @@ export const getCurrentUser = async () => {
         
     }
 }
+
+// Get all video Posts
+export async function getAllPosts() {
+    try {
+      const posts = await databases.listDocuments(
+        config.databaseId,
+        config.videoCollectionId
+      );
+  
+      return posts.documents;
+    } catch (error) {
+      throw new Error(error);
+    }
+}
+
+// Get latest created video posts
+export async function getLatestPosts() {
+    try {
+      const posts = await databases.listDocuments(
+        config.databaseId,
+        config.videoCollectionId,
+        [Query.orderDesc("$createdAt"), Query.limit(7)]
+      );
+  
+      return posts.documents;
+    } catch (error) {
+      throw new Error(error);
+    }
+  }

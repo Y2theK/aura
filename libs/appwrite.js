@@ -92,7 +92,7 @@ export const getCurrentUser = async () => {
 }
 
 // Get all video Posts
-export async function getAllPosts() {
+export const getAllPosts = async () => {
     try {
       const posts = await databases.listDocuments(
         config.databaseId,
@@ -106,7 +106,22 @@ export async function getAllPosts() {
 }
 
 // Get latest created video posts
-export async function getLatestPosts() {
+export const searchPosts = async (query) =>  {
+    try {
+      const posts = await databases.listDocuments(
+        config.databaseId,
+        config.videoCollectionId,
+        [Query.search('title',query)]
+      );
+  
+      return posts.documents;
+    } catch (error) {
+      throw new Error(error);
+    }
+}
+
+// Get latest created video posts
+export const getLatestPosts = async () => {
     try {
       const posts = await databases.listDocuments(
         config.databaseId,
@@ -118,4 +133,4 @@ export async function getLatestPosts() {
     } catch (error) {
       throw new Error(error);
     }
-  }
+}

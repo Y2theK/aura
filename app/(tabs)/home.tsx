@@ -9,6 +9,7 @@ import { getAllPosts, getLatestPosts } from "../../libs/appwrite";
 import VideoCard from "@/components/VideoCard";
 import SearchInput from "@/components/SearchInput";
 import EmptyState from "@/components/EmptyState";
+import Trending from "@/components/Trending";
 
 const Home = () => {
 
@@ -40,8 +41,8 @@ const Home = () => {
             title={item.title}
             thumbnail={item.thumbnail}
             video={item.video}
-            creator={item.users.name}
-            avatar={item.users.avatar}
+            creator={item.creator.name}
+            avatar={item.creator.avatar}
           />
         )}
         ListHeaderComponent={() => (
@@ -71,6 +72,7 @@ const Home = () => {
               <Text className="text-lg font-pregular text-gray-100 mb-3">
                 Latest Videos
               </Text>
+              <Trending posts={latestPosts ?? []}/>
             </View>
           </View>
         )}

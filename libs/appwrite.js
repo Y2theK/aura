@@ -83,7 +83,7 @@ export const getCurrentUser = async () => {
 
         if(!currentUser) throw Error;
 
-        return currentUser;
+        return currentUser.documents[0];
         
     } catch (error) {
         console.log(error);
@@ -105,7 +105,7 @@ export const getAllPosts = async () => {
     }
 }
 
-// Get latest created video posts
+// Get search video posts
 export const searchPosts = async (query) =>  {
     try {
       const posts = await databases.listDocuments(
@@ -118,6 +118,34 @@ export const searchPosts = async (query) =>  {
     } catch (error) {
       throw new Error(error);
     }
+}
+
+// Get user's video posts
+export const getUserPosts = async (userId) =>  {
+  try {
+    const posts = await databases.listDocuments(
+      config.databaseId,
+      config.videoCollectionId,
+      [Query.equal('creator',userId)]
+    );
+
+    return posts.documents;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+//sign out
+export const signOut = async () =>  {
+  try {
+    
+    const session = await account.deleteSession("current");
+
+    return session;
+
+  } catch (error) {
+    throw new Error(error);
+  }
 }
 
 // Get latest created video posts

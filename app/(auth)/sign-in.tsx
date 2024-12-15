@@ -5,12 +5,14 @@ import { images } from '../../constants'
 import FormField from '@/components/FormField'
 import CustomButton from '@/components/CustomButton'
 import { Link, router } from 'expo-router'
-import { signIn } from '@/libs/appwrite'
+import { getCurrentUser, signIn } from '@/libs/appwrite'
+import { useGlobalContext } from '@/context/GlobalProvider'
 
 
 
 const SignIn = () => {
 
+  const {setUser, setIsLoggin} = useGlobalContext();
   const [form,setForm] = useState({
     email: '',
     password: ''
@@ -24,9 +26,12 @@ const SignIn = () => {
     setIsSubmitting(true);
 
     try {
-      const result = await signIn(form.email, form.password);
+      await signIn(form.email, form.password);
 
       //set it to global state for session
+      const result = await getCurrentUser();
+      setUser(result);
+      setIsLoggin(true);
 
       router.push('/home');
 

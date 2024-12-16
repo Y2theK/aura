@@ -22,7 +22,6 @@ const Profile = () => {
 
     router.replace("/sign-in");
 
-    return;
   };
 
   return (

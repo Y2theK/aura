@@ -1,4 +1,4 @@
-import { Account, Avatars, Client, Databases, ID, Query } from 'react-native-appwrite';
+import { Account, Avatars, Client, Databases, ID, Query,Storage } from 'react-native-appwrite';
 export const config = {
     endpoint: "https://cloud.appwrite.io/v1",
     platform: "com.y2thek.aura",
@@ -20,6 +20,7 @@ client
 const account = new Account(client);
 const avatar = new Avatars(client);
 const databases = new Databases(client);
+const storage = new Storage(client);
 
 export const createUser = async (email, password, name) => {
     try {
@@ -161,4 +162,69 @@ export const getLatestPosts = async () => {
     } catch (error) {
       throw new Error(error);
     }
+}
+
+export const uploadFile = async (file, type) => {
+  if(!file) return
+
+  const { mimeType,...rest } = file;
+  const asset = { type:mimeType,...rest };
+  try {
+    const uploadedFile = await storage.createFile(
+      config.storageId,
+      ID.unique(),
+      asset
+    );
+
+    const fileUrl = await getFilePreview(uploadedFile.$id,type);
+    return fileUrl;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+export const getFilePreview = async (fileId,type) => {
+  let fileUrl;
+  try {
+    if(type === 'video') {
+      fileUrl = await storage.getFileView(config.storageId,fileId)
+    }else if(type === 'image'){
+      fileUrl = await storage.getFilePreview(config.storageId,fileId,2000,2000,top,100)
+    }else{
+      throw new Error("Invalid file type");
+    }
+
+    if( !fileUrl) { 
+      throw  Error;
+    }
+
+    return fileUrl;
+  } catch (error) {
+    throw new Error(error);
+  } 
+}
+
+export const createVideo = async (form) => {
+  try {
+    // we dont have to wait one after another file, we can do at the same time to reduce time since they are independance
+    const [thumbnailUrl, videoUrl] = await Promise.all([
+      uploadFile(form.thumbnail,'image'),
+      uploadFile(form.video,'video')
+    ]);
+    const newPost = await databases.createDocument(
+      config.databaseId,
+      config.videoCollectionId,
+      ID.unique(),{
+        title: form.title,
+        thumbnail: thumbnailUrl,
+        video: videoUrl,
+        prompt: form.prompt,
+        creator: form.userId
+      }
+    );
+
+    return newPost;
+  } catch (error) {
+    throw new Error(error);
+  }
 }

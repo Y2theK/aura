@@ -97,7 +97,8 @@ export const getAllPosts = async () => {
     try {
       const posts = await databases.listDocuments(
         config.databaseId,
-        config.videoCollectionId
+        config.videoCollectionId,
+        [Query.orderDesc("$createdAt")]
       );
   
       return posts.documents;
@@ -105,6 +106,22 @@ export const getAllPosts = async () => {
       throw new Error(error);
     }
 }
+
+// Get all video Posts
+export const getSavedPosts = async (userId) => {
+  try {
+    const posts = await databases.listDocuments(
+      config.databaseId,
+      config.videoCollectionId,
+      [Query.contains('saved_users',userId),Query.orderDesc("$createdAt")]
+    );
+
+    return posts.documents;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
 
 // Get search video posts
 export const searchPosts = async (query) =>  {
@@ -127,7 +144,7 @@ export const getUserPosts = async (userId) =>  {
     const posts = await databases.listDocuments(
       config.databaseId,
       config.videoCollectionId,
-      [Query.equal('creator',userId)]
+      [Query.equal('creator',userId),Query.orderDesc("$createdAt")]
     );
 
     return posts.documents;
@@ -224,6 +241,34 @@ export const createVideo = async (form) => {
     );
 
     return newPost;
+  } catch (error) {
+    throw new Error(error);
+  }
+}
+
+export const savedVideoWithUser = async (videoId,userId) => {
+  try {   
+     const doc = await databases.getDocument(
+      config.databaseId,
+      config.videoCollectionId,
+      videoId
+    );
+
+    const oldSavedUsers = doc.saved_users;
+    
+    let newSavedUsers = oldSavedUsers;
+    newSavedUsers = oldSavedUsers.includes(userId) ? oldSavedUsers.filter((s) => s != userId) : [...newSavedUsers,userId]
+    
+    const video = await databases.updateDocument(
+      config.databaseId,
+      config.videoCollectionId,
+      videoId,
+      {
+        'saved_users': newSavedUsers
+      }
+    );
+    
+    return video;
   } catch (error) {
     throw new Error(error);
   }

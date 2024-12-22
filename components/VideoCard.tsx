@@ -1,13 +1,28 @@
 
 import { useState } from "react";
-import { View, Text, TouchableOpacity, Image } from "react-native";
+import { View, Text, TouchableOpacity, Image, Alert } from "react-native";
 
 import { icons } from "../constants";
 import { ResizeMode, Video } from "expo-av";
+import { useGlobalContext } from "@/context/GlobalProvider";
+import { savedVideoWithUser } from "@/libs/appwrite";
 
-const VideoCard = ({ title, creator, avatar, thumbnail, video }) => {
+const VideoCard = ({ title, creator, avatar, thumbnail, video, videoId,savedUsers = [] }) => {
   const [play, setPlay] = useState(false);
+  const { user } = useGlobalContext();
 
+  const [savedUser,setSavedUser] = useState(savedUsers);
+
+  const savedVideo = async (videoId) => {
+    try {
+      const video = await savedVideoWithUser(videoId,user.$id);
+      setSavedUser([...video.saved_users])
+    } catch (error) {
+      Alert.alert("Error",error.message)
+    }
+    
+    
+  }
   return (
     <View className="flex flex-col items-center px-4 mb-14">
       <View className="flex flex-row gap-3 items-start">
@@ -37,7 +52,11 @@ const VideoCard = ({ title, creator, avatar, thumbnail, video }) => {
         </View>
 
         <View className="pt-2">
-          <Image source={icons.menu} className="w-5 h-5" resizeMode="contain" />
+          <TouchableOpacity
+            onPress={() => savedVideo(videoId)}
+          >
+            <Image source={icons.bookmark} className="w-5 h-5" tintColor={savedUser.includes(user.$id) ? '#FFA001' : '#CDCDE0'} resizeMode="contain" />
+          </TouchableOpacity>
         </View>
       </View>
 

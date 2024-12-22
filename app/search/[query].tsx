@@ -32,6 +32,8 @@ const Search = () => {
             video={item.video}
             creator={item.creator.name}
             avatar={item.creator.avatar}
+            videoId={item.$id}
+            savedUsers={item.saved_users}
           />
         )}
         ListHeaderComponent={() => (
